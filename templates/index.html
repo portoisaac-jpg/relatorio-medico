@@ -329,16 +329,27 @@
         </div>
         <div class="checks">
           <label class="check"><input type="checkbox" name="fibro_sintomas" value="dor_difusa"> <span>Dor muscular difusa generalizada</span></label>
+          <label class="check"><input type="checkbox" name="fibro_sintomas" value="dor_generalizada"> <span>Dor generalizada e crônica</span></label>
           <label class="check"><input type="checkbox" name="fibro_sintomas" value="fadiga_cronica"> <span>Fadiga crônica</span></label>
+          <label class="check"><input type="checkbox" name="fibro_sintomas" value="fadiga_extrema"> <span>Fadiga extrema</span></label>
           <label class="check"><input type="checkbox" name="fibro_sintomas" value="sono_nao_reparador"> <span>Sono não reparador</span></label>
           <label class="check"><input type="checkbox" name="fibro_sintomas" value="fibro_fog"> <span>Névoa mental (fibro fog) — dificuldade de memória e concentração</span></label>
+          <label class="check"><input type="checkbox" name="fibro_sintomas" value="dif_concentracao_fibro"> <span>Dificuldade de concentração</span></label>
+          <label class="check"><input type="checkbox" name="fibro_sintomas" value="falhas_memoria"> <span>Falhas na memória recente</span></label>
+          <label class="check"><input type="checkbox" name="fibro_sintomas" value="confusao_mental"> <span>Confusão mental</span></label>
+          <label class="check"><input type="checkbox" name="fibro_sintomas" value="rigidez_matinal"> <span>Rigidez matinal</span></label>
+          <label class="check"><input type="checkbox" name="fibro_sintomas" value="enrijecimento_musculos"> <span>Enrijecimento nos músculos e articulações</span></label>
           <label class="check"><input type="checkbox" name="fibro_sintomas" value="cefaleia"> <span>Cefaleia recorrente</span></label>
           <label class="check"><input type="checkbox" name="fibro_sintomas" value="parestesia"> <span>Parestesias (formigamentos)</span></label>
-          <label class="check"><input type="checkbox" name="fibro_sintomas" value="sii"> <span>Síndrome do intestino irritável</span></label>
+          <label class="check"><input type="checkbox" name="fibro_sintomas" value="formigamento_dormencia"> <span>Formigamento e dormência (parestesia)</span></label>
           <label class="check"><input type="checkbox" name="fibro_sintomas" value="hipersensibilidade"> <span>Hipersensibilidade a estímulos (luz, som, toque)</span></label>
+          <label class="check"><input type="checkbox" name="fibro_sintomas" value="hipersensibilidade_toque"> <span>Hipersensibilidade ao toque</span></label>
+          <label class="check"><input type="checkbox" name="fibro_sintomas" value="sensibilidade_aumentada"> <span>Sensibilidade aumentada</span></label>
+          <label class="check"><input type="checkbox" name="fibro_sintomas" value="sii"> <span>Síndrome do intestino irritável</span></label>
           <label class="check"><input type="checkbox" name="fibro_sintomas" value="ansiedade_fibro"> <span>Ansiedade associada</span></label>
+          <label class="check"><input type="checkbox" name="fibro_sintomas" value="ansiedade"> <span>Ansiedade</span></label>
           <label class="check"><input type="checkbox" name="fibro_sintomas" value="depressao_fibro"> <span>Depressão associada</span></label>
-          <label class="check"><input type="checkbox" name="fibro_sintomas" value="rigidez_matinal"> <span>Rigidez matinal</span></label>
+          <label class="check"><input type="checkbox" name="fibro_sintomas" value="sint_depressivos"> <span>Sintomas depressivos</span></label>
         </div>
       </div>
 
@@ -649,6 +660,102 @@
               <option value="suspenso">Suspenso por efeito adverso</option>
             </select>
           </div>
+          <div class="med-row">
+            <label class="check"><input type="checkbox" name="med_duloxetina_usou" value="1"> <span>Duloxetina</span></label>
+            <input type="text" name="med_duloxetina_dose" placeholder="Dose (opcional)">
+            <select name="med_duloxetina_resposta">
+              <option value="">— resposta —</option>
+              <option value="sem_efeito">Sem efeito</option>
+              <option value="efeito_parcial">Efeito parcial</option>
+              <option value="intoxicacao">Causou intoxicação</option>
+              <option value="em_uso">Em uso atualmente</option>
+              <option value="suspenso">Suspenso por efeito adverso</option>
+            </select>
+          </div>
+          <div class="med-row">
+            <label class="check"><input type="checkbox" name="med_amitriptilina_usou" value="1"> <span>Amitriptilina</span></label>
+            <input type="text" name="med_amitriptilina_dose" placeholder="Dose (opcional)">
+            <select name="med_amitriptilina_resposta">
+              <option value="">— resposta —</option>
+              <option value="sem_efeito">Sem efeito</option>
+              <option value="efeito_parcial">Efeito parcial</option>
+              <option value="intoxicacao">Causou intoxicação</option>
+              <option value="em_uso">Em uso atualmente</option>
+              <option value="suspenso">Suspenso por efeito adverso</option>
+            </select>
+          </div>
+          <div class="med-row">
+            <label class="check"><input type="checkbox" name="med_pregabalina_usou" value="1"> <span>Pregabalina</span></label>
+            <input type="text" name="med_pregabalina_dose" placeholder="Dose (opcional)">
+            <select name="med_pregabalina_resposta">
+              <option value="">— resposta —</option>
+              <option value="sem_efeito">Sem efeito</option>
+              <option value="efeito_parcial">Efeito parcial</option>
+              <option value="intoxicacao">Causou intoxicação</option>
+              <option value="em_uso">Em uso atualmente</option>
+              <option value="suspenso">Suspenso por efeito adverso</option>
+            </select>
+          </div>
+          <div class="med-row">
+            <label class="check"><input type="checkbox" name="med_gabapentina_usou" value="1"> <span>Gabapentina</span></label>
+            <input type="text" name="med_gabapentina_dose" placeholder="Dose (opcional)">
+            <select name="med_gabapentina_resposta">
+              <option value="">— resposta —</option>
+              <option value="sem_efeito">Sem efeito</option>
+              <option value="efeito_parcial">Efeito parcial</option>
+              <option value="intoxicacao">Causou intoxicação</option>
+              <option value="em_uso">Em uso atualmente</option>
+              <option value="suspenso">Suspenso por efeito adverso</option>
+            </select>
+          </div>
+          <div class="med-row">
+            <label class="check"><input type="checkbox" name="med_ciclobenzaprina_usou" value="1"> <span>Ciclobenzaprina</span></label>
+            <input type="text" name="med_ciclobenzaprina_dose" placeholder="Dose (opcional)">
+            <select name="med_ciclobenzaprina_resposta">
+              <option value="">— resposta —</option>
+              <option value="sem_efeito">Sem efeito</option>
+              <option value="efeito_parcial">Efeito parcial</option>
+              <option value="intoxicacao">Causou intoxicação</option>
+              <option value="em_uso">Em uso atualmente</option>
+              <option value="suspenso">Suspenso por efeito adverso</option>
+            </select>
+          </div>
+          <div class="med-row">
+            <label class="check"><input type="checkbox" name="med_nortriptilina_usou" value="1"> <span>Nortriptilina</span></label>
+            <input type="text" name="med_nortriptilina_dose" placeholder="Dose (opcional)">
+            <select name="med_nortriptilina_resposta">
+              <option value="">— resposta —</option>
+              <option value="sem_efeito">Sem efeito</option>
+              <option value="efeito_parcial">Efeito parcial</option>
+              <option value="intoxicacao">Causou intoxicação</option>
+              <option value="em_uso">Em uso atualmente</option>
+              <option value="suspenso">Suspenso por efeito adverso</option>
+            </select>
+          </div>
+          <div class="med-row">
+            <label class="check"><input type="checkbox" name="med_tizanidina_usou" value="1"> <span>Tizanidina</span></label>
+            <input type="text" name="med_tizanidina_dose" placeholder="Dose (opcional)">
+            <select name="med_tizanidina_resposta">
+              <option value="">— resposta —</option>
+              <option value="sem_efeito">Sem efeito</option>
+              <option value="efeito_parcial">Efeito parcial</option>
+              <option value="intoxicacao">Causou intoxicação</option>
+              <option value="em_uso">Em uso atualmente</option>
+              <option value="suspenso">Suspenso por efeito adverso</option>
+            </select>
+          </div>
+          <div class="med-row">
+            <label class="check"><input type="checkbox" name="med_baclofeno_usou" value="1"> <span>Baclofeno</span></label>
+            <input type="text" name="med_baclofeno_dose" placeholder="Dose (opcional)">
+            <select name="med_baclofeno_resposta">
+              <option value="">— resposta —</option>
+              <option value="sem_efeito">Sem efeito</option>
+              <option value="efeito_parcial">Efeito parcial</option>
+              <option value="intoxicacao">Causou intoxicação</option>
+              <option value="em_uso">Em uso atualmente</option>
+              <option value="suspenso">Suspenso por efeito adverso</option>
+            </select>
+          </div>
         </div>
         <label class="campo">
           <span>Outras medicações (texto livre)</span>
@@ -669,6 +776,9 @@
           <label class="check"><input type="checkbox" name="terapias" value="equoterapia"> <span>Equoterapia</span></label>
           <label class="check"><input type="checkbox" name="terapias" value="aba"> <span>Análise do Comportamento Aplicada (ABA)</span></label>
           <label class="check"><input type="checkbox" name="terapias" value="hidroterapia"> <span>Hidroterapia</span></label>
+          <label class="check"><input type="checkbox" name="terapias" value="psiquiatria"> <span>Psiquiatria</span></label>
+          <label class="check"><input type="checkbox" name="terapias" value="psicoterapia"> <span>Psicoterapia</span></label>
+          <label class="check"><input type="checkbox" name="terapias" value="terapias_manuais"> <span>Terapias Manuais</span></label>
         </div>
       </div>
 
@@ -744,7 +854,7 @@
         </label>
         <label class="check long">
           <input type="checkbox" name="justificativas" value="fibromialgia_cbd">
-          <span>A Fibromialgia é uma síndrome de dor crônica generalizada caracterizada por um conjunto de sintomas que comprometem significativamente a qualidade de vida do paciente, justificando o uso do canabidiol como terapêutica adjuvante: dor generalizada e crônica (dor difusa e persistente por mais de 3 meses, afetando músculos e articulações dos dois lados do corpo); fadiga extrema (cansaço persistente mesmo sem esforço físico); distúrbios do sono (sono superficial e não reparador); fibrofog — névoa mental (dificuldade de concentração e falhas na memória); rigidez matinal; formigamento e dormência (parestesia nas mãos e pés); hipersensibilidade ao toque; e outros sintomas associados como cefaleia, síndrome do intestino irritável, ansiedade e sintomas depressivos.</span>
+          <span>A Fibromialgia é uma síndrome de dor crônica generalizada caracterizada por um conjunto de sintomas que comprometem significativamente a qualidade de vida do paciente, justificando o uso do canabidiol como terapêutica adjuvante.</span>
         </label>
       </div>
       <label class="campo">
@@ -871,6 +981,9 @@
           <label class="check"><input type="checkbox" name="acompanhamento" value="psiquiatra"> <span>Psiquiatra</span></label>
           <label class="check"><input type="checkbox" name="acompanhamento" value="pediatra"> <span>Pediatra</span></label>
           <label class="check"><input type="checkbox" name="acompanhamento" value="medico_assist"> <span>Médico assistente prescritor</span></label>
+          <label class="check"><input type="checkbox" name="acompanhamento" value="reumatologista"> <span>Reumatologista</span></label>
+          <label class="check"><input type="checkbox" name="acompanhamento" value="acupunturista"> <span>Acupunturista</span></label>
+          <label class="check"><input type="checkbox" name="acompanhamento" value="ortopedista"> <span>Ortopedista</span></label>
         </div>
       </div>
       <div class="grid">
