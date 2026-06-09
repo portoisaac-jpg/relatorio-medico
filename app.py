@@ -55,16 +55,27 @@ SINTOMAS_LABELS = {
 
 FIBRO_SINTOMAS_LABELS = {
     "dor_difusa": "Dor muscular difusa generalizada",
+    "dor_generalizada": "Dor generalizada e crônica",
     "fadiga_cronica": "Fadiga crônica",
+    "fadiga_extrema": "Fadiga extrema",
     "sono_nao_reparador": "Sono não reparador",
     "fibro_fog": "Névoa mental (fibro fog) — dificuldade de memória e concentração",
     "cefaleia": "Cefaleia recorrente",
     "parestesia": "Parestesias (formigamentos)",
+    "formigamento_dormencia": "Formigamento e dormência (parestesia)",
     "sii": "Síndrome do intestino irritável",
     "hipersensibilidade": "Hipersensibilidade a estímulos (luz, som, toque)",
+    "hipersensibilidade_toque": "Hipersensibilidade ao toque",
+    "sensibilidade_aumentada": "Sensibilidade aumentada",
     "ansiedade_fibro": "Ansiedade associada",
+    "ansiedade": "Ansiedade",
     "depressao_fibro": "Depressão associada",
+    "sint_depressivos": "Sintomas depressivos",
     "rigidez_matinal": "Rigidez matinal",
+    "enrijecimento_musculos": "Enrijecimento nos músculos e articulações",
+    "dif_concentracao_fibro": "Dificuldade de concentração",
+    "falhas_memoria": "Falhas na memória recente",
+    "confusao_mental": "Confusão mental",
 }
 
 FIBRO_CRITERIOS_LABELS = {
@@ -97,6 +108,14 @@ MEDS = [
     ("topiramato",    "Topiramato"),
     ("carbamazepina", "Carbamazepina"),
     ("fenobarbital",  "Fenobarbital"),
+    ("duloxetina",    "Duloxetina"),
+    ("amitriptilina", "Amitriptilina"),
+    ("pregabalina",   "Pregabalina"),
+    ("gabapentina",   "Gabapentina"),
+    ("ciclobenzaprina","Ciclobenzaprina"),
+    ("nortriptilina", "Nortriptilina"),
+    ("tizanidina",    "Tizanidina"),
+    ("baclofeno",     "Baclofeno"),
 ]
 
 MED_RESPOSTA_LABELS = {
@@ -118,6 +137,9 @@ TERAPIAS_LABELS = {
     "equoterapia":         "Equoterapia",
     "aba":                 "Análise do Comportamento Aplicada (ABA)",
     "hidroterapia":        "Hidroterapia",
+    "psiquiatria":         "Psiquiatria",
+    "psicoterapia":        "Psicoterapia",
+    "terapias_manuais":    "Terapias Manuais",
 }
 
 JUSTIFICATIVAS_TEXTOS = {
@@ -183,21 +205,7 @@ JUSTIFICATIVAS_TEXTOS = {
     "fibromialgia_cbd": (
         "A Fibromialgia é uma síndrome de dor crônica generalizada caracterizada por um conjunto de sintomas "
         "que comprometem significativamente a qualidade de vida do paciente, justificando o uso do canabidiol "
-        "como terapêutica adjuvante:\n\n"
-        "• Dor generalizada e crônica: O sintoma principal. Uma dor difusa e persistente por mais de 3 meses, "
-        "que afeta músculos e articulações dos dois lados do corpo, podendo ser descrita como pontadas, ardência ou peso.\n\n"
-        "• Fadiga extrema: Cansaço persistente e falta de energia, mesmo sem esforço físico, que compromete a "
-        "realização de tarefas diárias.\n\n"
-        "• Distúrbios do sono: O sono costuma ser superficial e não reparador, fazendo com que a pessoa acorde "
-        "cansada e com dores, o que agrava o quadro de fadiga.\n\n"
-        "• Fibrofog (\"névoa mental\"): Dificuldade de concentração, falhas na memória recente e confusão mental.\n\n"
-        "• Rigidez matinal: Sensação de enrijecimento nos músculos e articulações, principalmente ao acordar, "
-        "que costuma melhorar ao longo do dia.\n\n"
-        "• Formigamento e dormência (parestesia): Sensação de agulhamento ou formigamento nas mãos e nos pés.\n\n"
-        "• Hipersensibilidade ao toque: Sensibilidade aumentada, a ponto de roupas justas ou um toque leve "
-        "causarem incômodo ou dor.\n\n"
-        "• Outros sintomas associados: Dores de cabeça frequentes (como enxaqueca), síndrome do intestino "
-        "irritável, ansiedade e sintomas depressivos."
+        "como terapêutica adjuvante."
     ),
 }
 
@@ -243,6 +251,9 @@ ACOMP_LABELS = {
     "psiquiatra":    "Psiquiatra",
     "pediatra":      "Pediatra",
     "medico_assist": "Médico assistente prescritor",
+    "reumatologista":"Reumatologista",
+    "acupunturista": "Acupunturista",
+    "ortopedista":   "Ortopedista",
 }
 
 PERIOD_LABELS = {
