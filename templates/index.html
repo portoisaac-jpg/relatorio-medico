@@ -1,0 +1,1010 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Relatório Médico — Gerador de Documento</title>
+  <link rel="stylesheet" href="/static/style.css">
+  <style>
+    /* ── Reset & base ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: "Segoe UI", Arial, sans-serif;
+      font-size: 15px;
+      background: #f0f4f8;
+      color: #222;
+      min-height: 100vh;
+    }
+
+    /* ── Topo ── */
+    .topo {
+      background: linear-gradient(135deg, #1f497d 0%, #2e75b6 100%);
+      color: #fff;
+      padding: 28px 32px 22px;
+      text-align: center;
+    }
+    .topo h1 { font-size: 1.9rem; font-weight: 700; letter-spacing: .5px; }
+    .topo .subtitulo { margin-top: 6px; opacity: .85; font-size: .95rem; }
+
+    /* ── Main ── */
+    main {
+      max-width: 900px;
+      margin: 32px auto 60px;
+      padding: 0 16px;
+    }
+
+    /* ── Blocos ── */
+    .bloco {
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,.08);
+      padding: 28px 32px;
+      margin-bottom: 24px;
+    }
+    .bloco h2 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #1f497d;
+      border-bottom: 2px solid #2e75b6;
+      padding-bottom: 8px;
+      margin-bottom: 20px;
+      text-transform: uppercase;
+      letter-spacing: .4px;
+    }
+    .subgrupo { margin-bottom: 22px; }
+    .subgrupo h3 {
+      font-size: .85rem;
+      font-weight: 700;
+      color: #2e75b6;
+      text-transform: uppercase;
+      letter-spacing: .3px;
+      margin-bottom: 10px;
+    }
+
+    /* ── Grid de campos ── */
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px 20px;
+    }
+    .campo { display: flex; flex-direction: column; gap: 5px; }
+    .campo.full { grid-column: 1 / -1; }
+    .campo > span {
+      font-size: .78rem;
+      font-weight: 600;
+      color: #555;
+      text-transform: uppercase;
+      letter-spacing: .3px;
+    }
+    .campo input,
+    .campo select,
+    .campo textarea {
+      border: 1.5px solid #ccd6e0;
+      border-radius: 6px;
+      padding: 8px 10px;
+      font-size: .95rem;
+      color: #222;
+      background: #fafcff;
+      transition: border-color .2s, box-shadow .2s;
+      width: 100%;
+      font-family: inherit;
+    }
+    .campo input:focus,
+    .campo select:focus,
+    .campo textarea:focus {
+      outline: none;
+      border-color: #2e75b6;
+      box-shadow: 0 0 0 3px rgba(46,117,182,.15);
+    }
+    .campo textarea { resize: vertical; }
+    .campo small { font-size: .78rem; color: #888; margin-top: 2px; }
+
+    /* ── Checkboxes ── */
+    .checks {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px 14px;
+    }
+    .checks.col { grid-template-columns: 1fr; }
+    .check {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      cursor: pointer;
+      padding: 6px 8px;
+      border-radius: 6px;
+      transition: background .15s;
+    }
+    .check:hover { background: #eef4fb; }
+    .check input[type="checkbox"] {
+      width: 15px;
+      height: 15px;
+      min-width: 15px;
+      margin-top: 3px;
+      accent-color: #2e75b6;
+      cursor: pointer;
+    }
+    .check span { font-size: .9rem; line-height: 1.45; }
+    .check.long span { font-size: .875rem; }
+
+    /* ── Medicações ── */
+    .med-list { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+    .med-row {
+      display: grid;
+      grid-template-columns: 200px 1fr 170px;
+      gap: 8px;
+      align-items: center;
+      padding: 7px 10px;
+      border-radius: 6px;
+      background: #fafcff;
+      border: 1px solid #e8eef5;
+    }
+    .med-row .check { padding: 0; }
+    .med-row input,
+    .med-row select {
+      border: 1.5px solid #ccd6e0;
+      border-radius: 5px;
+      padding: 6px 8px;
+      font-size: .88rem;
+      background: #fff;
+      width: 100%;
+      font-family: inherit;
+    }
+    .med-row input:focus,
+    .med-row select:focus {
+      outline: none;
+      border-color: #2e75b6;
+      box-shadow: 0 0 0 2px rgba(46,117,182,.12);
+    }
+
+    /* ── Hint ── */
+    .hint {
+      font-size: .82rem;
+      color: #777;
+      margin-bottom: 12px;
+      font-style: italic;
+    }
+
+    /* ── Ações ── */
+    .acoes {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      margin-top: 8px;
+      padding-bottom: 16px;
+    }
+    .btn-primary, .btn-secondary {
+      padding: 13px 36px;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background .2s, transform .1s;
+      font-family: inherit;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, #1f497d, #2e75b6);
+      color: #fff;
+      box-shadow: 0 3px 10px rgba(46,117,182,.35);
+    }
+    .btn-primary:hover { background: linear-gradient(135deg, #163761, #2463a0); transform: translateY(-1px); }
+    .btn-secondary { background: #e8eef5; color: #444; }
+    .btn-secondary:hover { background: #d8e4ef; }
+
+    /* ── Footer ── */
+    footer { text-align: center; padding: 20px; color: #999; font-size: .82rem; }
+
+    /* ── Responsivo ── */
+    @media (max-width: 640px) {
+      .grid         { grid-template-columns: 1fr; }
+      .checks       { grid-template-columns: 1fr; }
+      .med-row      { grid-template-columns: 1fr; }
+      .bloco        { padding: 20px 16px; }
+      .acoes        { flex-direction: column; align-items: stretch; }
+    }
+  </style>
+</head>
+<body>
+<header class="topo">
+  <h1>Relatório Médico</h1>
+  <p class="subtitulo">Marque as opções aplicáveis e preencha apenas os dados do paciente.</p>
+</header>
+<main>
+  <form id="formRelatorio" method="POST" action="/gerar" enctype="multipart/form-data">
+
+    <!-- ─────────── DADOS DO MÉDICO ─────────── -->
+    <section class="bloco">
+      <h2>Dados do Médico</h2>
+      <div class="grid">
+        <label class="campo">
+          <span>Nome do médico *</span>
+          <input type="text" name="medico" placeholder="Ex: Dra. Fernanda de Azevedo Ribeiro" required>
+        </label>
+        <label class="campo">
+          <span>CRM *</span>
+          <input type="text" name="crm" placeholder="Ex: 9401" required>
+        </label>
+        <label class="campo full">
+          <span>Especialidade (opcional)</span>
+          <input type="text" name="especialidade" placeholder="Ex: Neurologia">
+        </label>
+        <label class="campo full">
+          <span>Logomarca (opcional)</span>
+          <input type="file" name="logo" accept="image/png, image/jpeg">
+          <small>PNG ou JPG — aparecerá centralizada no topo do relatório.</small>
+        </label>
+      </div>
+    </section>
+
+    <!-- ─────────── 1. IDENTIFICAÇÃO DO PACIENTE ─────────── -->
+    <section class="bloco">
+      <h2>1. Identificação do Paciente</h2>
+      <div class="grid">
+        <label class="campo full">
+          <span>Nome completo *</span>
+          <input type="text" name="paciente_nome" placeholder="Ex: Joaquim Gonçalves Chagas" required>
+        </label>
+        <label class="campo">
+          <span>Idade</span>
+          <input type="text" name="paciente_idade" placeholder="Ex: 5 anos">
+        </label>
+        <label class="campo">
+          <span>Sexo</span>
+          <select name="paciente_sexo">
+            <option value="">—</option>
+            <option value="masculino">Masculino</option>
+            <option value="feminino">Feminino</option>
+          </select>
+        </label>
+        <label class="campo">
+          <span>RG</span>
+          <input type="text" name="paciente_rg">
+        </label>
+        <label class="campo">
+          <span>CPF</span>
+          <input type="text" name="paciente_cpf">
+        </label>
+        <label class="campo full">
+          <span>Endereço</span>
+          <input type="text" name="paciente_endereco">
+        </label>
+        <label class="campo full">
+          <span>Filiação (opcional)</span>
+          <input type="text" name="paciente_filiacao" placeholder="Ex: Filho de Maria Gonçalves e José Chagas">
+        </label>
+      </div>
+    </section>
+
+    <!-- ─────────── 2. HISTÓRICO CLÍNICO ─────────── -->
+    <section class="bloco">
+      <h2>2. Histórico Clínico Detalhado</h2>
+
+      <div class="subgrupo">
+        <h3>Diagnósticos</h3>
+        <div class="checks">
+          <label class="check"><input type="checkbox" name="diagnosticos" value="tea_1"> <span>Transtorno do Espectro Autista (TEA) — nível 1 (leve)</span></label>
+          <label class="check"><input type="checkbox" name="diagnosticos" value="tea_2"> <span>Transtorno do Espectro Autista (TEA) — nível 2 (moderado)</span></label>
+          <label class="check"><input type="checkbox" name="diagnosticos" value="tea_3"> <span>Transtorno do Espectro Autista (TEA) — nível 3 (severo)</span></label>
+          <label class="check"><input type="checkbox" name="diagnosticos" value="tea_linguagem"> <span>TEA com comprometimento da linguagem</span></label>
+          <label class="check"><input type="checkbox" name="diagnosticos" value="tdah"> <span>Transtorno do Déficit de Atenção com Hiperatividade (TDAH)</span></label>
+          <label class="check"><input type="checkbox" name="diagnosticos" value="integracao_sens"> <span>Transtorno de Integração Sensorial</span></label>
+          <label class="check"><input type="checkbox" name="diagnosticos" value="epilepsia"> <span>Epilepsia</span></label>
+          <label class="check"><input type="checkbox" name="diagnosticos" value="epilepsia_refr"> <span>Epilepsia refratária / de difícil controle</span></label>
+          <label class="check"><input type="checkbox" name="diagnosticos" value="atraso_neuro"> <span>Atraso de neurodesenvolvimento</span></label>
+          <label class="check"><input type="checkbox" name="diagnosticos" value="atraso_fala"> <span>Atraso de fala</span></label>
+          <label class="check"><input type="checkbox" name="diagnosticos" value="def_intelect"> <span>Deficiência intelectual</span></label>
+          <label class="check"><input type="checkbox" name="diagnosticos" value="disturbio_sono"> <span>Transtorno do sono</span></label>
+          <label class="check"><input type="checkbox" name="diagnosticos" value="ansiedade"> <span>Transtorno de ansiedade</span></label>
+          <label class="check"><input type="checkbox" name="diagnosticos" value="fibromialgia"> <span>Fibromialgia</span></label>
+        </div>
+      </div>
+
+      <!-- ── DETALHAMENTO FIBROMIALGIA (oculto por padrão) ── -->
+      <div class="subgrupo" id="subgrupo_fibromialgia" style="display:none;">
+        <h3>Fibromialgia — Detalhamento</h3>
+        <div class="grid">
+          <label class="campo">
+            <span>Tempo de diagnóstico</span>
+            <input type="text" name="fibro_tempo_diagnostico" placeholder="Ex: 2 anos">
+          </label>
+          <label class="campo">
+            <span>Intensidade da dor (EVA)</span>
+            <select name="fibro_intensidade_dor">
+              <option value="">—</option>
+              <option value="leve">Leve (1–3)</option>
+              <option value="moderada">Moderada (4–6)</option>
+              <option value="intensa">Intensa (7–10)</option>
+            </select>
+          </label>
+          <label class="campo">
+            <span>Critérios diagnósticos utilizados</span>
+            <select name="fibro_criterios">
+              <option value="">—</option>
+              <option value="acr_1990">ACR 1990 (pontos dolorosos)</option>
+              <option value="acr_2010">ACR 2010/2011 (WPI + SS)</option>
+              <option value="acr_2016">ACR 2016 (revisado)</option>
+            </select>
+          </label>
+        </div>
+        <div class="checks">
+          <label class="check"><input type="checkbox" name="fibro_sintomas" value="dor_difusa"> <span>Dor muscular difusa generalizada</span></label>
+          <label class="check"><input type="checkbox" name="fibro_sintomas" value="fadiga_cronica"> <span>Fadiga crônica</span></label>
+          <label class="check"><input type="checkbox" name="fibro_sintomas" value="sono_nao_reparador"> <span>Sono não reparador</span></label>
+          <label class="check"><input type="checkbox" name="fibro_sintomas" value="fibro_fog"> <span>Névoa mental (fibro fog) — dificuldade de memória e concentração</span></label>
+          <label class="check"><input type="checkbox" name="fibro_sintomas" value="cefaleia"> <span>Cefaleia recorrente</span></label>
+          <label class="check"><input type="checkbox" name="fibro_sintomas" value="parestesia"> <span>Parestesias (formigamentos)</span></label>
+          <label class="check"><input type="checkbox" name="fibro_sintomas" value="sii"> <span>Síndrome do intestino irritável</span></label>
+          <label class="check"><input type="checkbox" name="fibro_sintomas" value="hipersensibilidade"> <span>Hipersensibilidade a estímulos (luz, som, toque)</span></label>
+          <label class="check"><input type="checkbox" name="fibro_sintomas" value="ansiedade_fibro"> <span>Ansiedade associada</span></label>
+          <label class="check"><input type="checkbox" name="fibro_sintomas" value="depressao_fibro"> <span>Depressão associada</span></label>
+          <label class="check"><input type="checkbox" name="fibro_sintomas" value="rigidez_matinal"> <span>Rigidez matinal</span></label>
+        </div>
+      </div>
+
+      <div class="subgrupo">
+        <h3>Antecedentes</h3>
+        <div class="grid">
+          <label class="campo">
+            <span>Pré-natal</span>
+            <select name="pre_natal">
+              <option value="">—</option>
+              <option value="sim">Realizou pré-natal</option>
+              <option value="nao">Não realizou pré-natal</option>
+            </select>
+          </label>
+          <label class="campo">
+            <span>Tipo de parto</span>
+            <select name="parto">
+              <option value="">—</option>
+              <option value="normal">Normal</option>
+              <option value="cesareo">Cesáreo</option>
+              <option value="cesareo_complicacoes">Cesáreo com complicações</option>
+            </select>
+          </label>
+          <label class="campo">
+            <span>Hipoxia neonatal</span>
+            <select name="hipoxia">
+              <option value="">—</option>
+              <option value="sim">Sim</option>
+              <option value="nao">Não</option>
+            </select>
+          </label>
+          <label class="campo">
+            <span>Idade dos primeiros sintomas</span>
+            <input type="text" name="idade_sintomas" placeholder="Ex: 6 meses">
+          </label>
+        </div>
+      </div>
+
+      <div class="subgrupo">
+        <h3>Sintomas observados</h3>
+        <div class="checks">
+          <label class="check"><input type="checkbox" name="sintomas" value="choro_intenso"> <span>Choro intenso</span></label>
+          <label class="check"><input type="checkbox" name="sintomas" value="nao_fixacao_olhar"> <span>Não fixação do olhar</span></label>
+          <label class="check"><input type="checkbox" name="sintomas" value="ponta_pes"> <span>Andar na ponta dos pés</span></label>
+          <label class="check"><input type="checkbox" name="sintomas" value="seletividade_alim"> <span>Seletividade alimentar</span></label>
+          <label class="check"><input type="checkbox" name="sintomas" value="nao_aceita_comando"> <span>Não aceita comando</span></label>
+          <label class="check"><input type="checkbox" name="sintomas" value="sem_nocao_perigo"> <span>Não tem noção do perigo</span></label>
+          <label class="check"><input type="checkbox" name="sintomas" value="agressividade"> <span>Agressividade</span></label>
+          <label class="check"><input type="checkbox" name="sintomas" value="atraso_fala_sint"> <span>Atraso da fala</span></label>
+          <label class="check"><input type="checkbox" name="sintomas" value="atraso_cognitivo"> <span>Atraso de desenvolvimento cognitivo</span></label>
+          <label class="check"><input type="checkbox" name="sintomas" value="hiperatividade"> <span>Hiperatividade</span></label>
+          <label class="check"><input type="checkbox" name="sintomas" value="auto_mutilacao"> <span>Auto-mutilação</span></label>
+          <label class="check"><input type="checkbox" name="sintomas" value="impulsividade"> <span>Impulsividade</span></label>
+          <label class="check"><input type="checkbox" name="sintomas" value="dif_socializacao"> <span>Dificuldade de socialização com outras crianças</span></label>
+          <label class="check"><input type="checkbox" name="sintomas" value="disturbio_sono_sint"> <span>Distúrbios do sono</span></label>
+          <label class="check"><input type="checkbox" name="sintomas" value="estereotipias"> <span>Estereotipias</span></label>
+          <label class="check"><input type="checkbox" name="sintomas" value="nao_verbal"> <span>Paciente não verbal</span></label>
+          <label class="check"><input type="checkbox" name="sintomas" value="dif_concentracao"> <span>Dificuldade de concentração</span></label>
+          <label class="check"><input type="checkbox" name="sintomas" value="dif_aprendizado"> <span>Dificuldade de aprendizado escolar</span></label>
+          <label class="check"><input type="checkbox" name="sintomas" value="baixo_lim_frust"> <span>Baixo limiar à frustração</span></label>
+          <label class="check"><input type="checkbox" name="sintomas" value="desatencao"> <span>Desatenção</span></label>
+          <label class="check"><input type="checkbox" name="sintomas" value="procrastinacao"> <span>Tendência à procrastinação</span></label>
+        </div>
+      </div>
+
+      <div class="subgrupo">
+        <h3>Crises convulsivas</h3>
+        <div class="grid">
+          <label class="campo">
+            <span>Apresenta crises?</span>
+            <select name="tem_crises">
+              <option value="">—</option>
+              <option value="sim">Sim</option>
+              <option value="nao">Não</option>
+            </select>
+          </label>
+          <label class="campo">
+            <span>Frequência</span>
+            <input type="text" name="freq_crises" placeholder="Ex: 4 vezes por semana">
+          </label>
+        </div>
+      </div>
+
+      <div class="subgrupo">
+        <h3>Escolaridade</h3>
+        <div class="grid">
+          <label class="campo full">
+            <span>Situação escolar (opcional)</span>
+            <input type="text" name="escola" placeholder="Ex: Matriculado no grupo 5, com dificuldade de foco">
+          </label>
+        </div>
+      </div>
+
+      <label class="campo">
+        <span>Notas adicionais (opcional)</span>
+        <textarea name="historico_notas" rows="3" placeholder="Outros detalhes relevantes do histórico clínico..."></textarea>
+      </label>
+    </section>
+
+    <!-- ─────────── 3. TRATAMENTOS CONVENCIONAIS ─────────── -->
+    <section class="bloco">
+      <h2>3. Tratamentos Convencionais Já Realizados</h2>
+      <div class="subgrupo">
+        <h3>Medicações já utilizadas</h3>
+        <p class="hint">Marque as medicações e indique a resposta. Para cada uma você pode opcionalmente preencher a dose.</p>
+        <div class="med-list">
+          <div class="med-row">
+            <label class="check"><input type="checkbox" name="med_lamotrigina_usou" value="1"> <span>Lamotrigina</span></label>
+            <input type="text" name="med_lamotrigina_dose" placeholder="Dose (opcional, ex: 250mg 3x/dia)">
+            <select name="med_lamotrigina_resposta">
+              <option value="">— resposta —</option>
+              <option value="sem_efeito">Sem efeito</option>
+              <option value="efeito_parcial">Efeito parcial</option>
+              <option value="intoxicacao">Causou intoxicação</option>
+              <option value="em_uso">Em uso atualmente</option>
+              <option value="suspenso">Suspenso por efeito adverso</option>
+            </select>
+          </div>
+          <div class="med-row">
+            <label class="check"><input type="checkbox" name="med_neozine_usou" value="1"> <span>Neozine</span></label>
+            <input type="text" name="med_neozine_dose" placeholder="Dose (opcional, ex: 250mg 3x/dia)">
+            <select name="med_neozine_resposta">
+              <option value="">— resposta —</option>
+              <option value="sem_efeito">Sem efeito</option>
+              <option value="efeito_parcial">Efeito parcial</option>
+              <option value="intoxicacao">Causou intoxicação</option>
+              <option value="em_uso">Em uso atualmente</option>
+              <option value="suspenso">Suspenso por efeito adverso</option>
+            </select>
+          </div>
+          <div class="med-row">
+            <label class="check"><input type="checkbox" name="med_risperidona_usou" value="1"> <span>Risperidona</span></label>
+            <input type="text" name="med_risperidona_dose" placeholder="Dose (opcional, ex: 250mg 3x/dia)">
+            <select name="med_risperidona_resposta">
+              <option value="">— resposta —</option>
+              <option value="sem_efeito">Sem efeito</option>
+              <option value="efeito_parcial">Efeito parcial</option>
+              <option value="intoxicacao">Causou intoxicação</option>
+              <option value="em_uso">Em uso atualmente</option>
+              <option value="suspenso">Suspenso por efeito adverso</option>
+            </select>
+          </div>
+          <div class="med-row">
+            <label class="check"><input type="checkbox" name="med_levetiracetam_usou" value="1"> <span>Levetiracetam</span></label>
+            <input type="text" name="med_levetiracetam_dose" placeholder="Dose (opcional, ex: 250mg 3x/dia)">
+            <select name="med_levetiracetam_resposta">
+              <option value="">— resposta —</option>
+              <option value="sem_efeito">Sem efeito</option>
+              <option value="efeito_parcial">Efeito parcial</option>
+              <option value="intoxicacao">Causou intoxicação</option>
+              <option value="em_uso">Em uso atualmente</option>
+              <option value="suspenso">Suspenso por efeito adverso</option>
+            </select>
+          </div>
+          <div class="med-row">
+            <label class="check"><input type="checkbox" name="med_neuliptil_usou" value="1"> <span>Neuliptil</span></label>
+            <input type="text" name="med_neuliptil_dose" placeholder="Dose (opcional, ex: 250mg 3x/dia)">
+            <select name="med_neuliptil_resposta">
+              <option value="">— resposta —</option>
+              <option value="sem_efeito">Sem efeito</option>
+              <option value="efeito_parcial">Efeito parcial</option>
+              <option value="intoxicacao">Causou intoxicação</option>
+              <option value="em_uso">Em uso atualmente</option>
+              <option value="suspenso">Suspenso por efeito adverso</option>
+            </select>
+          </div>
+          <div class="med-row">
+            <label class="check"><input type="checkbox" name="med_depakene_usou" value="1"> <span>Depakene (Valproato)</span></label>
+            <input type="text" name="med_depakene_dose" placeholder="Dose (opcional, ex: 250mg 3x/dia)">
+            <select name="med_depakene_resposta">
+              <option value="">— resposta —</option>
+              <option value="sem_efeito">Sem efeito</option>
+              <option value="efeito_parcial">Efeito parcial</option>
+              <option value="intoxicacao">Causou intoxicação</option>
+              <option value="em_uso">Em uso atualmente</option>
+              <option value="suspenso">Suspenso por efeito adverso</option>
+            </select>
+          </div>
+          <div class="med-row">
+            <label class="check"><input type="checkbox" name="med_frisium_usou" value="1"> <span>Frisium (Clobazam)</span></label>
+            <input type="text" name="med_frisium_dose" placeholder="Dose (opcional, ex: 250mg 3x/dia)">
+            <select name="med_frisium_resposta">
+              <option value="">— resposta —</option>
+              <option value="sem_efeito">Sem efeito</option>
+              <option value="efeito_parcial">Efeito parcial</option>
+              <option value="intoxicacao">Causou intoxicação</option>
+              <option value="em_uso">Em uso atualmente</option>
+              <option value="suspenso">Suspenso por efeito adverso</option>
+            </select>
+          </div>
+          <div class="med-row">
+            <label class="check"><input type="checkbox" name="med_aristab_usou" value="1"> <span>Aristab (Aripiprazol)</span></label>
+            <input type="text" name="med_aristab_dose" placeholder="Dose (opcional, ex: 250mg 3x/dia)">
+            <select name="med_aristab_resposta">
+              <option value="">— resposta —</option>
+              <option value="sem_efeito">Sem efeito</option>
+              <option value="efeito_parcial">Efeito parcial</option>
+              <option value="intoxicacao">Causou intoxicação</option>
+              <option value="em_uso">Em uso atualmente</option>
+              <option value="suspenso">Suspenso por efeito adverso</option>
+            </select>
+          </div>
+          <div class="med-row">
+            <label class="check"><input type="checkbox" name="med_ritalina_usou" value="1"> <span>Ritalina (Metilfenidato)</span></label>
+            <input type="text" name="med_ritalina_dose" placeholder="Dose (opcional, ex: 250mg 3x/dia)">
+            <select name="med_ritalina_resposta">
+              <option value="">— resposta —</option>
+              <option value="sem_efeito">Sem efeito</option>
+              <option value="efeito_parcial">Efeito parcial</option>
+              <option value="intoxicacao">Causou intoxicação</option>
+              <option value="em_uso">Em uso atualmente</option>
+              <option value="suspenso">Suspenso por efeito adverso</option>
+            </select>
+          </div>
+          <div class="med-row">
+            <label class="check"><input type="checkbox" name="med_venvanse_usou" value="1"> <span>Venvanse (Lisdexanfetamina)</span></label>
+            <input type="text" name="med_venvanse_dose" placeholder="Dose (opcional, ex: 250mg 3x/dia)">
+            <select name="med_venvanse_resposta">
+              <option value="">— resposta —</option>
+              <option value="sem_efeito">Sem efeito</option>
+              <option value="efeito_parcial">Efeito parcial</option>
+              <option value="intoxicacao">Causou intoxicação</option>
+              <option value="em_uso">Em uso atualmente</option>
+              <option value="suspenso">Suspenso por efeito adverso</option>
+            </select>
+          </div>
+          <div class="med-row">
+            <label class="check"><input type="checkbox" name="med_fluoxetina_usou" value="1"> <span>Fluoxetina</span></label>
+            <input type="text" name="med_fluoxetina_dose" placeholder="Dose (opcional, ex: 250mg 3x/dia)">
+            <select name="med_fluoxetina_resposta">
+              <option value="">— resposta —</option>
+              <option value="sem_efeito">Sem efeito</option>
+              <option value="efeito_parcial">Efeito parcial</option>
+              <option value="intoxicacao">Causou intoxicação</option>
+              <option value="em_uso">Em uso atualmente</option>
+              <option value="suspenso">Suspenso por efeito adverso</option>
+            </select>
+          </div>
+          <div class="med-row">
+            <label class="check"><input type="checkbox" name="med_sertralina_usou" value="1"> <span>Sertralina</span></label>
+            <input type="text" name="med_sertralina_dose" placeholder="Dose (opcional, ex: 250mg 3x/dia)">
+            <select name="med_sertralina_resposta">
+              <option value="">— resposta —</option>
+              <option value="sem_efeito">Sem efeito</option>
+              <option value="efeito_parcial">Efeito parcial</option>
+              <option value="intoxicacao">Causou intoxicação</option>
+              <option value="em_uso">Em uso atualmente</option>
+              <option value="suspenso">Suspenso por efeito adverso</option>
+            </select>
+          </div>
+          <div class="med-row">
+            <label class="check"><input type="checkbox" name="med_clonazepam_usou" value="1"> <span>Clonazepam</span></label>
+            <input type="text" name="med_clonazepam_dose" placeholder="Dose (opcional, ex: 250mg 3x/dia)">
+            <select name="med_clonazepam_resposta">
+              <option value="">— resposta —</option>
+              <option value="sem_efeito">Sem efeito</option>
+              <option value="efeito_parcial">Efeito parcial</option>
+              <option value="intoxicacao">Causou intoxicação</option>
+              <option value="em_uso">Em uso atualmente</option>
+              <option value="suspenso">Suspenso por efeito adverso</option>
+            </select>
+          </div>
+          <div class="med-row">
+            <label class="check"><input type="checkbox" name="med_haloperidol_usou" value="1"> <span>Haloperidol</span></label>
+            <input type="text" name="med_haloperidol_dose" placeholder="Dose (opcional, ex: 250mg 3x/dia)">
+            <select name="med_haloperidol_resposta">
+              <option value="">— resposta —</option>
+              <option value="sem_efeito">Sem efeito</option>
+              <option value="efeito_parcial">Efeito parcial</option>
+              <option value="intoxicacao">Causou intoxicação</option>
+              <option value="em_uso">Em uso atualmente</option>
+              <option value="suspenso">Suspenso por efeito adverso</option>
+            </select>
+          </div>
+          <div class="med-row">
+            <label class="check"><input type="checkbox" name="med_topiramato_usou" value="1"> <span>Topiramato</span></label>
+            <input type="text" name="med_topiramato_dose" placeholder="Dose (opcional, ex: 250mg 3x/dia)">
+            <select name="med_topiramato_resposta">
+              <option value="">— resposta —</option>
+              <option value="sem_efeito">Sem efeito</option>
+              <option value="efeito_parcial">Efeito parcial</option>
+              <option value="intoxicacao">Causou intoxicação</option>
+              <option value="em_uso">Em uso atualmente</option>
+              <option value="suspenso">Suspenso por efeito adverso</option>
+            </select>
+          </div>
+          <div class="med-row">
+            <label class="check"><input type="checkbox" name="med_carbamazepina_usou" value="1"> <span>Carbamazepina</span></label>
+            <input type="text" name="med_carbamazepina_dose" placeholder="Dose (opcional, ex: 250mg 3x/dia)">
+            <select name="med_carbamazepina_resposta">
+              <option value="">— resposta —</option>
+              <option value="sem_efeito">Sem efeito</option>
+              <option value="efeito_parcial">Efeito parcial</option>
+              <option value="intoxicacao">Causou intoxicação</option>
+              <option value="em_uso">Em uso atualmente</option>
+              <option value="suspenso">Suspenso por efeito adverso</option>
+            </select>
+          </div>
+          <div class="med-row">
+            <label class="check"><input type="checkbox" name="med_fenobarbital_usou" value="1"> <span>Fenobarbital</span></label>
+            <input type="text" name="med_fenobarbital_dose" placeholder="Dose (opcional, ex: 250mg 3x/dia)">
+            <select name="med_fenobarbital_resposta">
+              <option value="">— resposta —</option>
+              <option value="sem_efeito">Sem efeito</option>
+              <option value="efeito_parcial">Efeito parcial</option>
+              <option value="intoxicacao">Causou intoxicação</option>
+              <option value="em_uso">Em uso atualmente</option>
+              <option value="suspenso">Suspenso por efeito adverso</option>
+            </select>
+          </div>
+        </div>
+        <label class="campo">
+          <span>Outras medicações (texto livre)</span>
+          <textarea name="med_outras" rows="2" placeholder="Ex: Aristab 2,5ml de 12/12h"></textarea>
+        </label>
+      </div>
+
+      <div class="subgrupo">
+        <h3>Terapias multidisciplinares</h3>
+        <div class="checks">
+          <label class="check"><input type="checkbox" name="terapias" value="terapia_ocupacional"> <span>Terapia Ocupacional</span></label>
+          <label class="check"><input type="checkbox" name="terapias" value="fonoaudiologia"> <span>Fonoaudiologia</span></label>
+          <label class="check"><input type="checkbox" name="terapias" value="fisioterapia"> <span>Fisioterapia</span></label>
+          <label class="check"><input type="checkbox" name="terapias" value="psicologia"> <span>Psicologia</span></label>
+          <label class="check"><input type="checkbox" name="terapias" value="musicoterapia"> <span>Musicoterapia</span></label>
+          <label class="check"><input type="checkbox" name="terapias" value="psicomotricidade"> <span>Psicomotricidade</span></label>
+          <label class="check"><input type="checkbox" name="terapias" value="nutricao"> <span>Nutrição</span></label>
+          <label class="check"><input type="checkbox" name="terapias" value="equoterapia"> <span>Equoterapia</span></label>
+          <label class="check"><input type="checkbox" name="terapias" value="aba"> <span>Análise do Comportamento Aplicada (ABA)</span></label>
+          <label class="check"><input type="checkbox" name="terapias" value="hidroterapia"> <span>Hidroterapia</span></label>
+        </div>
+      </div>
+
+      <div class="subgrupo">
+        <h3>Uso prévio de canabidiol</h3>
+        <div class="grid">
+          <label class="campo">
+            <span>Já utilizou CBD?</span>
+            <select name="cbd_previo">
+              <option value="">—</option>
+              <option value="sim">Sim, com melhora</option>
+              <option value="sim_sem_resposta">Sim, sem resposta</option>
+              <option value="nao">Não</option>
+            </select>
+          </label>
+          <label class="campo">
+            <span>Duração do uso anterior</span>
+            <input type="text" name="cbd_duracao" placeholder="Ex: 3 meses">
+          </label>
+          <label class="campo full">
+            <span>Motivo da interrupção (se houve)</span>
+            <input type="text" name="cbd_motivo_interrupcao" placeholder="Ex: Falta de condições financeiras">
+          </label>
+        </div>
+      </div>
+
+      <label class="campo">
+        <span>Notas adicionais (opcional)</span>
+        <textarea name="tratamentos_notas" rows="2"></textarea>
+      </label>
+    </section>
+
+    <!-- ─────────── 4. JUSTIFICATIVA CLÍNICA ─────────── -->
+    <section class="bloco">
+      <h2>4. Justificativa Clínica para o Canabidiol</h2>
+      <p class="hint">Marque os parágrafos que devem compor o relatório. O texto será inserido automaticamente.</p>
+      <div class="checks col">
+        <label class="check long">
+          <input type="checkbox" name="justificativas" value="falha_terapeutica" checked>
+          <span>Diante da falha terapêutica na remissão dos sintomas do paciente com a terapia clássica, foi discutido com os responsáveis a possibilidade da modulação do sistema endocanabinóide a partir de produtos da Cannabis sativa. A descoberta deste sistema e seus receptores trouxe luz ao tratamento de diversas doenças crônicas com a possibilidade de menos efeitos adversos e melhora da saúde global de pacientes e cuidadores.</span>
+        </label>
+        <label class="check long">
+          <input type="checkbox" name="justificativas" value="cfm_2113">
+          <span>Segundo a Resolução 2.113/14 do Conselho Federal de Medicina, protocolo de utilização do CBD para epilepsia refratária: o CBD deverá ser utilizado em adição às medicações que o paciente vinha utilizando anteriormente. O tratamento com CBD pode começar com 2,5mg/kg/dia por via oral, divididas em duas doses diárias, podendo ser aumentada quinzenalmente até a dose máxima de 25mg/kg/dia, a fim de determinar a dose ideal com garantia de segurança e tolerabilidade.</span>
+        </label>
+        <label class="check long">
+          <input type="checkbox" name="justificativas" value="cbd_thc" checked>
+          <span>No TEA e no TDAH, o tratamento combinado de CBD e THC vem se mostrando bastante promissor devido à sua capacidade polifarmacológica, na qual sintomas como ansiedade, comportamentos estereotipados, insônia e epilepsias são tratados com um único produto. Além disso, é relatada melhora na aceitação de alimentos e apetite. A Cannabis conta ainda com mais de uma centena de canabinoides ativos (CBN, CBG, THCV etc.) e outros grupos de moléculas com efeitos farmacológicos relevantes, como flavonoides e terpenos, que se combinam garantindo um amplo efeito terapêutico.</span>
+        </label>
+        <label class="check long">
+          <input type="checkbox" name="justificativas" value="full_spectrum">
+          <span>Foi escolhido o uso de óleo de Cannabis Full Spectrum por se tratar de produto integral, que garante além do CBD outros canabinoides (como o THC, com papel importante em sintomas motores e elétricos como as epilepsias), terpenos e flavonoides, com ações farmacológicas relevantes para o tratamento combinado. A literatura aponta que o uso integral geralmente apresenta ação farmacológica efetiva com doses menores, ação em sintomas secundários como apetite e ansiedade, além de menores efeitos adversos durante o uso.</span>
+        </label>
+        <label class="check long">
+          <input type="checkbox" name="justificativas" value="neuroplasticidade" checked>
+          <span>Estudos indicam que a neuroplasticidade é maior nos primeiros anos de vida, o que implica em uma resposta terapêutica mais efetiva. Portanto, o tratamento deve ser iniciado imediatamente e mantido por tempo indeterminado, sem interrupções.</span>
+        </label>
+        <label class="check long">
+          <input type="checkbox" name="justificativas" value="bjhr_2023">
+          <span>Em junho de 2023 a Brazilian Journal of Health Review realizou revisão integrativa em que se concluiu que o uso do canabidiol no TEA possui relação com melhora na qualidade de vida dos pacientes — comportamento, hiperatividade, estereotipias, distúrbios do sono, comorbidades e convulsões — além de reduzir ansiedade, agressividade, inquietação e agitação.</span>
+        </label>
+        <label class="check long">
+          <input type="checkbox" name="justificativas" value="epilepsia_dificil">
+          <span>A epilepsia de difícil controle é caracterizada por falha de controle de crises após tentativa de mais de dois anticonvulsivantes de primeira linha apropriados à idade e ao tipo de crise. O uso adequado de medicamentos auxiliares ajuda a controlar crises e minimizar fatores de risco e complicações, incluindo o status epilepticus, condição especialmente perigosa pelo risco de danos cerebrais permanentes.</span>
+        </label>
+        <label class="check long">
+          <input type="checkbox" name="justificativas" value="epilepsia_combinacao">
+          <span>Nos casos de pacientes portadores de crises epilépticas e convulsivas, a formulação do tratamento à base de canabidiol deverá, em regra, ser associada à composição de outros canabinoides, a fim de que seja garantido maior potencial efetivo, jamais possível com o uso de fármacos isolados.</span>
+        </label>
+        <label class="check long">
+          <input type="checkbox" name="justificativas" value="tea_sem_tratamento_especifico">
+          <span>O Transtorno do Espectro Autista (TEA) é uma comorbidade para a qual não há tratamento específico. Trata-se de transtorno neuropsiquiátrico desenvolvido na infância, manejado por equipe multiprofissional, com diversas terapêuticas adjuvantes — entre as quais o canabidiol, com objetivo de alívio de sinais específicos.</span>
+        </label>
+      </div>
+      <label class="campo">
+        <span>Texto adicional (opcional)</span>
+        <textarea name="justificativa_notas" rows="3"></textarea>
+      </label>
+    </section>
+
+    <!-- ─────────── 5. ESPECIFICAÇÃO TÉCNICA ─────────── -->
+    <section class="bloco">
+      <h2>5. Especificação Técnica do Produto</h2>
+      <div class="grid">
+        <label class="campo full">
+          <span>Produto prescrito</span>
+          <select name="produto" id="produtoSelect">
+            <option value="">— selecione —</option>
+            <option value="terramed_3000">TERRAMED Oil Full Spectrum 3000mg (Fabricante TERRAMED/EUA)</option>
+            <option value="terramed_1500">TERRAMED Oil Full Spectrum 1500mg (Fabricante TERRAMED/EUA)</option>
+            <option value="terramed_6000">TERRAMED Oil Full Spectrum 6000mg (Fabricante TERRAMED/EUA)</option>
+            <option value="hempmeds_3000">HempMeds CBD Real Scientific Hemp Oil 3000mg</option>
+            <option value="entourage_2000">Entourage Full Spectrum 2000mg</option>
+            <option value="abrace_3000">Abrace Esperança Full Spectrum 3000mg (Brasil)</option>
+            <option value="prati_200">Prati-Donaduzzi Canabidiol 200mg/ml (Brasil)</option>
+            <option value="custom">Outro (preencher abaixo)</option>
+          </select>
+        </label>
+        <label class="campo full" id="produtoCustomWrap" style="display:none;">
+          <span>Nome do produto (personalizado)</span>
+          <input type="text" name="produto_custom" placeholder="Ex: Especial Full Spectrum 6000mg (FabricanteX/País)">
+        </label>
+      </div>
+    </section>
+
+    <!-- ─────────── 6. POSOLOGIA ─────────── -->
+    <section class="bloco">
+      <h2>6. Posologia Prescrita</h2>
+      <div class="grid">
+        <label class="campo">
+          <span>Quantidade de gotas *</span>
+          <input type="number" name="pos_gotas" min="1" placeholder="Ex: 3" required>
+        </label>
+        <label class="campo">
+          <span>Frequência</span>
+          <select name="pos_frequencia">
+            <option value="de 12/12h">de 12/12h</option>
+            <option value="de 8/8h">de 8/8h</option>
+            <option value="de 6/6h">de 6/6h</option>
+            <option value="1x ao dia">1x ao dia</option>
+            <option value="2x ao dia">2x ao dia</option>
+            <option value="3x ao dia">3x ao dia</option>
+          </select>
+        </label>
+        <label class="campo">
+          <span>Via de administração</span>
+          <select name="pos_via">
+            <option value="sublingual">Sublingual</option>
+            <option value="oral">Oral</option>
+          </select>
+        </label>
+        <label class="campo">
+          <span>Tempo sublingual (segundos)</span>
+          <input type="number" name="pos_segundos" min="0" value="20" placeholder="20">
+        </label>
+        <label class="campo">
+          <span>Quantidade de frascos</span>
+          <input type="number" name="pos_frascos" min="1" value="12" placeholder="Ex: 12">
+        </label>
+        <label class="campo">
+          <span>Recomendação alimentar</span>
+          <select name="pos_refeicao">
+            <option value="">— sem recomendação específica —</option>
+            <option value="apos_cafe_jantar">Após café da manhã e jantar</option>
+            <option value="apos_refeicoes">Após as refeições</option>
+            <option value="em_jejum">Em jejum</option>
+          </select>
+        </label>
+        <label class="campo full">
+          <span>Observações adicionais (opcional)</span>
+          <textarea name="pos_obs" rows="2" placeholder="Ex: Aumentar conforme tolerância"></textarea>
+        </label>
+      </div>
+    </section>
+
+    <!-- ─────────── 7. URGÊNCIA / RISCO ─────────── -->
+    <section class="bloco">
+      <h2>7. Urgência / Risco à Saúde</h2>
+      <p class="hint">Marque os textos aplicáveis ao caso.</p>
+      <div class="checks col">
+        <label class="check long">
+          <input type="checkbox" name="urgencias" value="urgencia_tea_tdah" checked>
+          <span>Por se tratar de paciente dentro do TEA e/ou TDAH, há urgência em iniciar o tratamento com canabidiol, que se mostra eficaz na redução dos sintomas dessas patologias. Somado a isso, terapias multidisciplinares com psicólogo, fonoaudiólogo e terapeuta ocupacional são abordagem complementar essencial para o desenvolvimento de competências e habilidades para a vida adulta.</span>
+        </label>
+        <label class="check long">
+          <input type="checkbox" name="urgencias" value="risco_status_epilept">
+          <span>Há risco aumentado de status epilepticus, condição especialmente perigosa pela possibilidade de causar danos cerebrais permanentes. O início imediato do tratamento é fundamental para controle adequado das crises.</span>
+        </label>
+        <label class="check long">
+          <input type="checkbox" name="urgencias" value="risco_regressao" checked>
+          <span>A não continuação do tratamento em curso poderá acarretar regressão dos avanços já alcançados pelo paciente, comprometendo seu desenvolvimento neurológico e funcional.</span>
+        </label>
+        <label class="check long">
+          <input type="checkbox" name="urgencias" value="uso_continuo" checked>
+          <span>O uso do óleo de Cannabis deve ser contínuo. Pode haver necessidade de aumento da concentração do medicamento com o passar do tempo; entretanto, a substituição por outros óleos de canabidiol sem avaliação médica prévia não é segura.</span>
+        </label>
+        <label class="check long">
+          <input type="checkbox" name="urgencias" value="perda_aprendizado">
+          <span>A persistência das crises e dos sintomas vem causando prejuízos significativos no aprendizado e na socialização do paciente, sendo urgente o início do tratamento para evitar maior comprometimento.</span>
+        </label>
+      </div>
+      <label class="campo">
+        <span>Texto adicional (opcional)</span>
+        <textarea name="urgencia_notas" rows="2"></textarea>
+      </label>
+    </section>
+
+    <!-- ─────────── 8. ACOMPANHAMENTO ─────────── -->
+    <section class="bloco">
+      <h2>8. Declaração de Acompanhamento</h2>
+      <div class="subgrupo">
+        <h3>Acompanhamento será realizado com:</h3>
+        <div class="checks">
+          <label class="check"><input type="checkbox" name="acompanhamento" value="equipe_multi" checked> <span>Equipe multidisciplinar especializada</span></label>
+          <label class="check"><input type="checkbox" name="acompanhamento" value="neurologista"> <span>Neurologista</span></label>
+          <label class="check"><input type="checkbox" name="acompanhamento" value="psiquiatra"> <span>Psiquiatra</span></label>
+          <label class="check"><input type="checkbox" name="acompanhamento" value="pediatra"> <span>Pediatra</span></label>
+          <label class="check"><input type="checkbox" name="acompanhamento" value="medico_assist"> <span>Médico assistente prescritor</span></label>
+        </div>
+      </div>
+      <div class="grid">
+        <label class="campo">
+          <span>Periodicidade</span>
+          <select name="acomp_periodicidade">
+            <option value="">— a definir —</option>
+            <option value="mensal">Mensal</option>
+            <option value="bimestral">Bimestral</option>
+            <option value="trimestral">Trimestral</option>
+            <option value="semestral">Semestral</option>
+            <option value="conforme_necessidade">Conforme necessidade</option>
+          </select>
+        </label>
+      </div>
+      <label class="campo">
+        <span>Texto adicional (opcional)</span>
+        <textarea name="acomp_notas" rows="2"></textarea>
+      </label>
+    </section>
+
+    <!-- ─────────── FECHAMENTO ─────────── -->
+    <section class="bloco">
+      <h2>Fechamento</h2>
+      <div class="subgrupo">
+        <h3>CID — sugestões comuns</h3>
+        <div class="checks">
+          <label class="check"><input type="checkbox" name="cids" value="F84.0"> <span><strong>F84.0</strong> — Autismo infantil</span></label>
+          <label class="check"><input type="checkbox" name="cids" value="F84.1"> <span><strong>F84.1</strong> — Autismo atípico</span></label>
+          <label class="check"><input type="checkbox" name="cids" value="F84.5"> <span><strong>F84.5</strong> — Síndrome de Asperger</span></label>
+          <label class="check"><input type="checkbox" name="cids" value="F90.0"> <span><strong>F90.0</strong> — Transtorno de hiperatividade com déficit de atenção</span></label>
+          <label class="check"><input type="checkbox" name="cids" value="G40.0"> <span><strong>G40.0</strong> — Epilepsia e síndromes epilépticas idiopáticas</span></label>
+          <label class="check"><input type="checkbox" name="cids" value="G40.2"> <span><strong>G40.2</strong> — Epilepsia e síndromes epilépticas sintomáticas</span></label>
+          <label class="check"><input type="checkbox" name="cids" value="G40.3"> <span><strong>G40.3</strong> — Epilepsia generalizada</span></label>
+          <label class="check"><input type="checkbox" name="cids" value="F70"> <span><strong>F70</strong> — Retardo mental leve</span></label>
+          <label class="check"><input type="checkbox" name="cids" value="F71"> <span><strong>F71</strong> — Retardo mental moderado</span></label>
+          <label class="check"><input type="checkbox" name="cids" value="F80"> <span><strong>F80</strong> — Transtornos específicos do desenvolvimento da fala</span></label>
+          <label class="check"><input type="checkbox" name="cids" value="F51.0"> <span><strong>F51.0</strong> — Insônia não-orgânica</span></label>
+          <label class="check"><input type="checkbox" name="cids" value="M79.7"> <span><strong>M79.7</strong> — Fibromialgia</span></label>
+        </div>
+        <label class="campo">
+          <span>CID adicional (opcional)</span>
+          <input type="text" name="cid_extra" placeholder="Ex: F84.5">
+        </label>
+      </div>
+      <div class="grid">
+        <label class="campo">
+          <span>Cidade</span>
+          <input type="text" name="cidade" placeholder="Ex: Salvador">
+        </label>
+        <label class="campo">
+          <span>Data</span>
+          <input type="date" name="data" value="2026-06-09">
+        </label>
+      </div>
+    </section>
+
+    <div class="acoes">
+      <button type="submit" class="btn-primary">Gerar Relatório (.docx)</button>
+      <button type="reset" class="btn-secondary">Limpar</button>
+    </div>
+  </form>
+</main>
+<footer>
+  <small>O documento gerado é editável no Word, Google Docs ou LibreOffice. Imprima, assine e carimbe.</small>
+</footer>
+<script>
+  // ── Mostrar/esconder campo de produto customizado ───────────────────────
+  const produtoSel = document.getElementById('produtoSelect');
+  const produtoCustomWrap = document.getElementById('produtoCustomWrap');
+  if (produtoSel) {
+    produtoSel.addEventListener('change', () => {
+      produtoCustomWrap.style.display = produtoSel.value === 'custom' ? 'flex' : 'none';
+    });
+  }
+
+  // ── Mostrar/esconder detalhamento Fibromialgia ──────────────────────────
+  document.querySelectorAll('input[name="diagnosticos"][value="fibromialgia"]').forEach(el => {
+    el.addEventListener('change', () => {
+      document.getElementById('subgrupo_fibromialgia').style.display = el.checked ? 'block' : 'none';
+    });
+  });
+
+  // ── Persistência leve em localStorage ──────────────────────────────────
+  const form = document.getElementById('formRelatorio');
+  const STORAGE_KEY = 'relatorio_medico_rascunho_v2';
+
+  function snapshot() {
+    const data = { _checks: {}, _values: {} };
+    form.querySelectorAll('input, select, textarea').forEach(el => {
+      if (!el.name) return;
+      if (el.type === 'file') return;
+      if (el.type === 'checkbox' || el.type === 'radio') {
+        data._checks[el.name + '|' + el.value] = el.checked;
+      } else {
+        data._values[el.name] = el.value;
+      }
+    });
+    return data;
+  }
+
+  function restore() {
+    try {
+      const data = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+      if (!data._values) return;
+      form.querySelectorAll('input, select, textarea').forEach(el => {
+        if (!el.name || el.type === 'file') return;
+        if (el.type === 'checkbox' || el.type === 'radio') {
+          const k = el.name + '|' + el.value;
+          if (k in data._checks) el.checked = data._checks[k];
+        } else if (el.name in data._values) {
+          el.value = data._values[el.name];
+        }
+      });
+      if (produtoSel && produtoSel.value === 'custom') {
+        produtoCustomWrap.style.display = 'flex';
+      }
+      // Restaurar visibilidade do subgrupo fibromialgia
+      const fibroCheck = form.querySelector('input[name="diagnosticos"][value="fibromialgia"]');
+      if (fibroCheck && fibroCheck.checked) {
+        document.getElementById('subgrupo_fibromialgia').style.display = 'block';
+      }
+    } catch (e) { /* ignore */ }
+  }
+
+  restore();
+  form.addEventListener('input',  () => localStorage.setItem(STORAGE_KEY, JSON.stringify(snapshot())));
+  form.addEventListener('change', () => localStorage.setItem(STORAGE_KEY, JSON.stringify(snapshot())));
+
+  form.addEventListener('submit', () => {
+    setTimeout(() => {
+      const data = snapshot();
+      const manterValues = ['medico', 'crm', 'especialidade', 'cidade'];
+      const novo = { _values: {}, _checks: {} };
+      manterValues.forEach(k => { if (data._values[k]) novo._values[k] = data._values[k]; });
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(novo));
+    }, 1500);
+  });
+</script>
+</body>
+</html>
