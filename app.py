@@ -51,6 +51,19 @@ SINTOMAS_LABELS = {
     "baixo_lim_frust": "Baixo limiar à frustração",
     "desatencao": "Desatenção",
     "procrastinacao": "Tendência à procrastinação",
+    "dor_generalizada_cronica": "Dor generalizada e crônica",
+    "fadiga_extrema": "Fadiga extrema",
+    "rigidez_matinal": "Rigidez matinal",
+    "formigamento_dormencia": "Formigamento e dormência (parestesia)",
+    "hipersensibilidade_toque": "Hipersensibilidade ao toque",
+    "sii": "Síndrome do intestino irritável",
+    "ansiedade_sint": "Ansiedade",
+    "sint_depressivos": "Sintomas depressivos",
+    "sensibilidade_aumentada": "Sensibilidade aumentada",
+    "enrijecimento_musculos": "Enrijecimento nos músculos e articulações",
+    "dif_concentracao_fibro": "Dificuldade de concentração",
+    "falhas_memoria": "Falhas na memória recente",
+    "confusao_mental": "Confusão mental",
 }
 
 FIBRO_SINTOMAS_LABELS = {
